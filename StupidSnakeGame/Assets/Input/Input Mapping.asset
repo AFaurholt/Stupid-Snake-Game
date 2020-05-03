@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac8a8706b715fbd429ec7c079e56f049, type: 3}
+  m_Name: Input Mapping
+  m_EditorClassIdentifier: 
+  inputMappings:
+  - keyCode: 273
+    mapping: 1
+  - keyCode: 274
+    mapping: 2
+  - keyCode: 275
+    mapping: 4
+  - keyCode: 276
+    mapping: 3
+  - keyCode: 97
+    mapping: 3
+  - keyCode: 100
+    mapping: 4
+  - keyCode: 115
+    mapping: 2
+  - keyCode: 119
+    mapping: 1
