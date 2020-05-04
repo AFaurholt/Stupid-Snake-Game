@@ -24,7 +24,10 @@ namespace AF.StupidSnakeGame
             HashSet<KeyCommand> keyCommands = new HashSet<KeyCommand>();
             foreach (KeyCode activeInput in _currentInputStatus.Where(x => x.Value).Select(x => x.Key))
             {
-                keyCommands.Add(inputLayout.GetEasyLookupMapping[activeInput]);
+                if (inputLayout.GetEasyLookupMapping.TryGetValue(activeInput, out KeyCommand value))
+                {
+                    keyCommands.Add(value);
+                }
             }
 
             return keyCommands;
@@ -42,11 +45,6 @@ namespace AF.StupidSnakeGame
             foreach (KeyCode item in (KeyCode[])Enum.GetValues(typeof(KeyCode)))
             {
                 _currentInputStatus[item] = Input.GetKey(item);
-            }
-
-            foreach (var item in GetActiveCommands())
-            {
-                Debug.Log(item.ToString());
             }
         }
     }
