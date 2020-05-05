@@ -24,6 +24,11 @@ namespace AF.StupidSnakeGame
             _movementSystem.SetRigidbody(_rb);
         }
 
+        private void Start()
+        {
+            _pickupSpawn.SpawnPickup();
+        }
+
         void FixedUpdate()
         {
             var activeCommands = _inputCommandController.GetActiveCommands();
@@ -32,11 +37,34 @@ namespace AF.StupidSnakeGame
                 _movementSystem.UpdateMoveCommand(activeCommands);
             }
         }
-        void OnCollisionEnter(Collision collision)
+        //void OnCollisionEnter(Collision collision)
+        //{
+        //    //8 == Wall
+        //    //9 == Pickup
+        //    //switch (collision.gameObject.layer)
+        //    //{
+        //    //    case 8:
+        //    //        {
+        //    //            //TODO death screen
+        //    //            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        //    //            break;
+        //    //        }
+        //    //    case 9:
+        //    //        {
+        //    //            score++;
+        //    //            _scoreTextMesh.text = $"{_scoreText}{score}";
+        //    //            Destroy(collision.transform.root.gameObject);
+        //    //            _pickupSpawn.SpawnPickup();
+        //    //            break;
+        //    //        }
+        //    //    default:
+        //    //        break;
+        //    //}
+        //}
+
+        private void OnTriggerEnter(Collider other)
         {
-            //8 == Wall
-            //9 == Pickup
-            switch (collision.gameObject.layer)
+            switch (other.gameObject.layer)
             {
                 case 8:
                     {
@@ -48,7 +76,8 @@ namespace AF.StupidSnakeGame
                     {
                         score++;
                         _scoreTextMesh.text = $"{_scoreText}{score}";
-                        Destroy(collision.transform.root.gameObject);
+                        Destroy(other.transform.root.gameObject);
+                        _pickupSpawn.SpawnPickup();
                         break;
                     }
                 default:
