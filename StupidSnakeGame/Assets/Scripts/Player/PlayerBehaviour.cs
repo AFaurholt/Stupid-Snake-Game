@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 namespace AF.StupidSnakeGame
 {
 
@@ -9,13 +11,19 @@ namespace AF.StupidSnakeGame
     {
         [SerializeField] InputCommandController _inputCommandController = default;
         [SerializeField] MovementSystem _movementSystem = default;
+        [SerializeField] TextMesh _scoreTextMesh = default;
+        [SerializeField] PickupSpawn _pickupSpawn = default;
         [SerializeField] Rigidbody _rb = default;
+        [HideInInspector] public int score = 0;
+        [SerializeField] string _scoreText = "Score: ";
 
         void Awake()
         {
+            _scoreTextMesh.text = $"{_scoreText}{score}";
             _movementSystem.SetTransform(transform);
             _movementSystem.SetRigidbody(_rb);
         }
+
         void FixedUpdate()
         {
             var activeCommands = _inputCommandController.GetActiveCommands();
@@ -24,7 +32,6 @@ namespace AF.StupidSnakeGame
                 _movementSystem.UpdateMoveCommand(activeCommands);
             }
         }
-
         void OnCollisionEnter(Collision collision)
         {
             //8 == Wall
@@ -33,12 +40,15 @@ namespace AF.StupidSnakeGame
             {
                 case 8:
                     {
-                        Debug.Log("Hit a wall");
+                        //TODO death screen
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                         break;
                     }
                 case 9:
                     {
-                        Debug.Log("Hit a pickup");
+                        score++;
+                        _scoreTextMesh.text = $"{_scoreText}{score}";
+                        Destroy(collision.transform.root.gameObject);
                         break;
                     }
                 default:
