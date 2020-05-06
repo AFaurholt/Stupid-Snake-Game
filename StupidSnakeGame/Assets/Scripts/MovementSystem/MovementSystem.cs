@@ -21,6 +21,20 @@ namespace AF.StupidSnakeGame
         KeyCommand _queuedCommand = KeyCommand.None;
         [SerializeField] DeltaToUse _deltaToUse = DeltaToUse.FixedDelta;
 
+        public KeyCommand CurrentCommand
+        {
+            get
+            {
+                return _currentKeyCommand;
+            }
+        }
+        public KeyCommand QueuedCommand
+        {
+            get
+            {
+                return _queuedCommand;
+            }
+        }
         void Move()
         {
             if (HasCommand())
@@ -126,7 +140,7 @@ namespace AF.StupidSnakeGame
                 GetNextDestination();
             }
             Move();
-            
+
         }
 
     }

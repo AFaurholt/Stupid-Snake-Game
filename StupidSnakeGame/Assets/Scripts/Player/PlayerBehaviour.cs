@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,9 +17,15 @@ namespace AF.StupidSnakeGame
         [SerializeField] Rigidbody _rb = default;
         [HideInInspector] public int score = 0;
         [SerializeField] string _scoreText = "Score: ";
+        List<GameObject> _tails;
+        List<TailBehaviour> _tailBehaviours;
+        [SerializeField] GameObject _tailPrefab;
+        [SerializeField] float _tailOffset;
 
         void Awake()
         {
+            _tails = new List<GameObject>();
+            _tailBehaviours = new List<TailBehaviour>();
             _scoreTextMesh.text = $"{_scoreText}{score}";
             _movementSystem.SetTransform(transform);
             _movementSystem.SetRigidbody(_rb);
@@ -36,31 +43,19 @@ namespace AF.StupidSnakeGame
             {
                 _movementSystem.UpdateMoveCommand(activeCommands);
             }
+
+            for (int i = 0; i < _tailBehaviours.Count; i++)
+            {
+                if (i > 0)
+                {
+                    _tailBehaviours[i].PushCommand(_tailBehaviours[i - 1].GetCurrentCommand());
+                }
+                else
+                {
+                    _tailBehaviours[i].PushCommand(_movementSystem.CurrentCommand);
+                }
+            }
         }
-        //void OnCollisionEnter(Collision collision)
-        //{
-        //    //8 == Wall
-        //    //9 == Pickup
-        //    //switch (collision.gameObject.layer)
-        //    //{
-        //    //    case 8:
-        //    //        {
-        //    //            //TODO death screen
-        //    //            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        //    //            break;
-        //    //        }
-        //    //    case 9:
-        //    //        {
-        //    //            score++;
-        //    //            _scoreTextMesh.text = $"{_scoreText}{score}";
-        //    //            Destroy(collision.transform.root.gameObject);
-        //    //            _pickupSpawn.SpawnPickup();
-        //    //            break;
-        //    //        }
-        //    //    default:
-        //    //        break;
-        //    //}
-        //}
 
         private void OnTriggerEnter(Collider other)
         {
@@ -78,12 +73,63 @@ namespace AF.StupidSnakeGame
                         _scoreTextMesh.text = $"{_scoreText}{score}";
                         Destroy(other.transform.root.gameObject);
                         _pickupSpawn.SpawnPickup();
+                        SpawnTail();
                         break;
                     }
                 default:
                     break;
             }
         }
-    }
 
+        private void SpawnTail()
+        {
+            if (_tails.Count > 0)
+            {
+
+                TailBehaviour tailBehaviour = _tailBehaviours.Last();
+                SpawnTail(tailBehaviour.GetCurrentCommand(), tailBehaviour.transform);
+            }
+            else
+            {
+                SpawnTail(_movementSystem.CurrentCommand, transform);
+
+            }
+
+        }
+
+        private void SpawnTail(KeyCommand currentDirection, Transform _transform)
+        {
+            Vector3 offset = Vector3.zero;
+            switch (currentDirection)
+            {
+                case KeyCommand.None:
+                    break;
+                case KeyCommand.MoveUp:
+                    offset = new Vector3(0, 1) * _tailOffset;
+
+                    break;
+                case KeyCommand.MoveDown:
+                    offset = new Vector3(0, -1) * _tailOffset;
+
+                    break;
+                case KeyCommand.MoveLeft:
+                    offset = new Vector3(-1, 0) * _tailOffset;
+
+                    break;
+                case KeyCommand.MoveRight:
+                    offset = new Vector3(1, 0) * _tailOffset;
+
+                    break;
+                default:
+                    break;
+            }
+
+            var tail = Instantiate(_tailPrefab, _transform.position - offset, Quaternion.identity);
+            _tails.Add(tail);
+
+            var tailBehav = (TailBehaviour)tail.GetComponent(typeof(TailBehaviour));
+            tailBehav.SetUp(_movementSystem.moveSpeedMs, _movementSystem.isCellBasedMovement, _movementSystem.moveLength);
+            _tailBehaviours.Add(tailBehav);
+        }
+    }
 }
