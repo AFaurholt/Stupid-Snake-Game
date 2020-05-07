@@ -38,7 +38,7 @@ namespace AF.StupidSnakeGame
 
         void FixedUpdate()
         {
-            var activeCommands = _inputCommandController.GetActiveCommands();
+            HashSet<KeyCommand> activeCommands = _inputCommandController.GetActiveCommands();
             if (activeCommands.Count > 0)
             {
                 _movementSystem.UpdateMoveCommand(activeCommands);
@@ -128,7 +128,7 @@ namespace AF.StupidSnakeGame
             _tails.Add(tail);
 
             var tailBehav = (TailBehaviour)tail.GetComponent(typeof(TailBehaviour));
-            tailBehav.SetUp(_movementSystem.moveSpeedMs, _movementSystem.isCellBasedMovement, _movementSystem.moveLength);
+            tailBehav.SetUp(_movementSystem);
             _tailBehaviours.Add(tailBehav);
         }
     }

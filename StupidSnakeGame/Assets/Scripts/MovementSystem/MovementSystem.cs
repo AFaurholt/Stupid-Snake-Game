@@ -35,11 +35,26 @@ namespace AF.StupidSnakeGame
                 return _queuedCommand;
             }
         }
+        public float CurrentMoveTime
+        {
+            get
+            {
+                return _currentMoveTime;
+            }
+        }
+        public void SyncWith(MovementSystem movementSystem)
+        {
+            moveSpeedMs = movementSystem.moveSpeedMs;
+            isCellBasedMovement = movementSystem.isCellBasedMovement;
+            moveLength = movementSystem.moveLength;
+            _currentMoveTime -= movementSystem.CurrentMoveTime;
+        }
+
         void Move()
         {
             if (HasCommand())
             {
-                var delta = _deltaToUse ==
+                float delta = _deltaToUse ==
                     DeltaToUse.FixedDelta ?
                     Time.fixedDeltaTime : Time.deltaTime;
 

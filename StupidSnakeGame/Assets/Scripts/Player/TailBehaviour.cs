@@ -16,11 +16,9 @@ namespace AF.StupidSnakeGame
             _movementSystem.SetRigidbody(_rb);
         }
 
-        public void SetUp(float movementSpeed, bool isCellBase, float moveLength)
+        public void SetUp(MovementSystem movementSystem)
         {
-            _movementSystem.moveSpeedMs = movementSpeed;
-            _movementSystem.isCellBasedMovement = isCellBase;
-            _movementSystem.moveLength = moveLength;
+            _movementSystem.SyncWith(movementSystem);
         }
 
         public void PushCommand(KeyCommand keyCommand)
